@@ -8,8 +8,10 @@ layout(set = 0, binding = 1) uniform GlobalUniform {
     vec3 camera_position;
 } global_uniform;
 
+layout(location = 0) out vec4 frag_pos;
+
 void main(void)
 {
-    vec4 pos = global_uniform.model * vec4(position, 1.0);
-    gl_Position = global_uniform.view_proj * pos;
+    frag_pos= global_uniform.model * vec4(position, 1.0);
+    gl_Position = global_uniform.view_proj * frag_pos;
 }

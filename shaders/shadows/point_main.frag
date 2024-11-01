@@ -35,7 +35,9 @@ pbr_material_uniform;
 
 layout(set = 0, binding = 4) uniform LightsInfo
 {
+	Light directional_lights[MAX_LIGHT_COUNT];
 	Light point_lights[MAX_LIGHT_COUNT];
+	Light spot_lights[MAX_LIGHT_COUNT];
 }
 lights_info;
 
@@ -65,6 +67,9 @@ void main(void)
 	vec3 normal = normalize(in_normal);
 
 	vec3 light_contribution = vec3(0.0);
+
+//	o_color = vec4(vec3(calculate_point_light_shadow(in_pos.xyz)), 1.0);
+//	return;
 
 	for (uint i = 0U; i < POINT_LIGHT_COUNT; ++i)
 	{

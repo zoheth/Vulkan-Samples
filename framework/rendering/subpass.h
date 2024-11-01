@@ -123,6 +123,7 @@ class Subpass
 
 	const std::vector<uint32_t>                               &get_color_resolve_attachments() const;
 	const std::string                                         &get_debug_name() const;
+	const uint32_t                                            &get_depth_stencil_attachment() const;
 	const uint32_t                                            &get_depth_stencil_resolve_attachment() const;
 	ResolveModeFlagBitsType                                    get_depth_stencil_resolve_mode() const;
 	DepthStencilStateType                                     &get_depth_stencil_state();
@@ -139,6 +140,7 @@ class Subpass
 	void                                                       set_debug_name(const std::string &name);
 	void                                                       set_disable_depth_stencil_attachment(bool disable_depth_stencil);
 	void                                                       set_depth_stencil_resolve_attachment(uint32_t depth_stencil_resolve);
+	void                                                       set_depth_stencil_attachment(uint32_t depth_stencil);
 	void                                                       set_depth_stencil_resolve_mode(ResolveModeFlagBitsType mode);
 	void                                                       set_input_attachments(std::vector<uint32_t> const &input);
 	void                                                       set_output_attachments(std::vector<uint32_t> const &output);
@@ -171,6 +173,8 @@ class Subpass
 	 *        be set to nullptr, which disables depth testing
 	 */
 	bool disable_depth_stencil_attachment{false};
+
+	uint32_t depth_stencil_attachment{VK_ATTACHMENT_UNUSED};
 
 	/// Default to no depth stencil resolve attachment
 	uint32_t depth_stencil_resolve_attachment{VK_ATTACHMENT_UNUSED};
@@ -373,6 +377,12 @@ inline const std::string &Subpass<bindingType>::get_debug_name() const
 }
 
 template <vkb::BindingType bindingType>
+const uint32_t & Subpass<bindingType>::get_depth_stencil_attachment() const
+{
+	return depth_stencil_attachment;
+}
+
+template <vkb::BindingType bindingType>
 inline const uint32_t &Subpass<bindingType>::get_depth_stencil_resolve_attachment() const
 {
 	return depth_stencil_resolve_attachment;
@@ -426,6 +436,12 @@ template <vkb::BindingType bindingType>
 inline void Subpass<bindingType>::set_depth_stencil_resolve_attachment(uint32_t depth_stencil_resolve)
 {
 	depth_stencil_resolve_attachment = depth_stencil_resolve;
+}
+
+template <vkb::BindingType bindingType>
+void Subpass<bindingType>::set_depth_stencil_attachment(uint32_t depth_stencil)
+{
+	depth_stencil_attachment = depth_stencil;
 }
 
 template <vkb::BindingType bindingType>

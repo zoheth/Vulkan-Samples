@@ -32,6 +32,8 @@ struct SubpassInfo
 
 	std::vector<uint32_t> output_attachments;
 
+	uint32_t depth_stencil_attachment{VK_ATTACHMENT_UNUSED};
+
 	std::vector<uint32_t> color_resolve_attachments;
 
 	bool disable_depth_stencil_attachment;

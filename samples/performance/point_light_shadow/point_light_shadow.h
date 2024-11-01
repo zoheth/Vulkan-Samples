@@ -36,7 +36,8 @@ class PointShadowSubpass : public vkb::GeometrySubpass
 	                   vkb::ShaderSource &&vertex_source,
 	                   vkb::ShaderSource &&fragment_source,
 	                   vkb::sg::Scene     &scene,
-	                   vkb::sg::Camera    &camera);
+	                   vkb::sg::Camera    &camera,
+						uint32_t face_index);
 
 	void draw(vkb::CommandBuffer &command_buffer) override;
 
@@ -51,7 +52,7 @@ class PointShadowSubpass : public vkb::GeometrySubpass
 
   private:
 	uint32_t                 current_face{0};
-	std::array<glm::mat4, 6> view_matrices;
+	glm::mat4 view_matrice;
 };
 
 class PointMainSubpass : public vkb::ForwardSubpass
@@ -72,7 +73,7 @@ class PointMainSubpass : public vkb::ForwardSubpass
   private:
 	std::unique_ptr<vkb::core::Sampler> cubemap_shadowmap_sampler_{};
 
-	vkb::sg::Camera &shadowmap_camera_;
+	vkb::sg::PerspectiveCamera &shadowmap_camera_;
 
 	std::vector<std::unique_ptr<vkb::core::ImageView>> &shadow_cube_views_;
 
@@ -84,11 +85,13 @@ class PointLightShadow : public vkb::VulkanSampleC
   public:
 	PointLightShadow();
 
+	virtual ~PointLightShadow() = default;
+
 	bool prepare(const vkb::ApplicationOptions &options) override;
 
 	void update(float delta_time) override;
 
-	virtual ~PointLightShadow() = default;
+	void draw_gui() override;
 
   private:
 	void create_shadow_render_target(uint32_t size);
@@ -98,8 +101,6 @@ class PointLightShadow : public vkb::VulkanSampleC
 	std::unique_ptr<vkb::RenderPipeline> create_shadow_renderpass();
 
 	vkb::sg::Camera *camera{};
-
-	PointShadowSubpass *shadow_subpass;
 
 	std::vector < std::unique_ptr<vkb::core::Image>> depth_cubemap_image_;
 

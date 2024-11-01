@@ -793,6 +793,7 @@ RenderPass &CommandBuffer::get_render_pass(const vkb::RenderTarget              
 		subpass_info_it->disable_depth_stencil_attachment = subpass->get_disable_depth_stencil_attachment();
 		subpass_info_it->depth_stencil_resolve_mode       = subpass->get_depth_stencil_resolve_mode();
 		subpass_info_it->depth_stencil_resolve_attachment = subpass->get_depth_stencil_resolve_attachment();
+		subpass_info_it->depth_stencil_attachment         = subpass->get_depth_stencil_attachment();
 		subpass_info_it->debug_name                       = subpass->get_debug_name();
 
 		++subpass_info_it;

@@ -334,20 +334,28 @@ void RenderPass::create_renderpass(const std::vector<Attachment> &attachments, c
 
 		if (!subpass.disable_depth_stencil_attachment)
 		{
-			// Assumption: depth stencil attachment appears in the list before any depth stencil resolve attachment
-			auto it = find_if(attachments.begin(), attachments.end(), [](const Attachment attachment) { return is_depth_format(attachment.format); });
-			if (it != attachments.end())
+			if (subpass.depth_stencil_attachment != VK_ATTACHMENT_UNUSED)
 			{
-				auto i_depth_stencil = vkb::to_u32(std::distance(attachments.begin(), it));
-				auto initial_layout  = it->initial_layout == VK_IMAGE_LAYOUT_UNDEFINED ? VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL : it->initial_layout;
-				depth_stencil_attachments[i].push_back(get_attachment_reference<T_AttachmentReference>(i_depth_stencil, initial_layout));
-
-				if (subpass.depth_stencil_resolve_mode != VK_RESOLVE_MODE_NONE)
+				auto initial_layout = attachments[subpass.depth_stencil_attachment].initial_layout == VK_IMAGE_LAYOUT_UNDEFINED ? VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL : attachments[subpass.depth_stencil_attachment].initial_layout;
+				depth_stencil_attachments[i].push_back(get_attachment_reference<T_AttachmentReference>(subpass.depth_stencil_attachment, initial_layout));
+			}
+			else
+			{
+				// Assumption: depth stencil attachment appears in the list before any depth stencil resolve attachment
+				auto it = find_if(attachments.begin(), attachments.end(), [](const Attachment attachment) { return is_depth_format(attachment.format); });
+				if (it != attachments.end())
 				{
-					auto i_depth_stencil_resolve = subpass.depth_stencil_resolve_attachment;
-					initial_layout               = attachments[i_depth_stencil_resolve].initial_layout == VK_IMAGE_LAYOUT_UNDEFINED ? VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL : attachments[i_depth_stencil_resolve].initial_layout;
-					depth_resolve_attachments[i].push_back(get_attachment_reference<T_AttachmentReference>(i_depth_stencil_resolve, initial_layout));
-				}
+					auto i_depth_stencil = vkb::to_u32(std::distance(attachments.begin(), it));
+					auto initial_layout  = it->initial_layout == VK_IMAGE_LAYOUT_UNDEFINED ? VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL : it->initial_layout;
+					depth_stencil_attachments[i].push_back(get_attachment_reference<T_AttachmentReference>(i_depth_stencil, initial_layout));
+
+					if (subpass.depth_stencil_resolve_mode != VK_RESOLVE_MODE_NONE)
+					{
+						auto i_depth_stencil_resolve = subpass.depth_stencil_resolve_attachment;
+						initial_layout               = attachments[i_depth_stencil_resolve].initial_layout == VK_IMAGE_LAYOUT_UNDEFINED ? VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL : attachments[i_depth_stencil_resolve].initial_layout;
+						depth_resolve_attachments[i].push_back(get_attachment_reference<T_AttachmentReference>(i_depth_stencil_resolve, initial_layout));
+					}
+				}	
 			}
 		}
 	}
